@@ -12,6 +12,7 @@ async function run() {
   const supabase = createClient(supabase_url, supabase_key);
 
   const filename = images[0].split("/").pop();
+  const extension = filename.split(".").pop();
   const image_file = await fs.readFileSync(images[0]);
 
   var { data, error } = await supabase.storage
@@ -19,6 +20,7 @@ async function run() {
     .upload(`${filename}`, image_file, {
       cacheControl: "3600",
       upsert: true,
+      contentType: `image/${extension}`,
     });
 
   return `${supabase_url}/storage/v1/object/public/${supabase_bucket}/${filename}`;
